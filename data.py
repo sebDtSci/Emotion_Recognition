@@ -1,23 +1,38 @@
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
+import tensorflow as tf
+import deeplake
 
-train_dir = "path_to_training_data"
-validation_dir = "path_to_validation_data"
+emotions = {0: 'Angry', 1: 'Disgust', 2: 'Fear', 3: 'Happy', 4: 'Sad', 5: 'Surprise', 6: 'Neutral'}
+ds = deeplake.load('hub://activeloop/fer2013-train')
+ds_test = deeplake.load('hub://activeloop/fer2013-public-test')
 
-# Préparation des données
-train_datagen = ImageDataGenerator(rescale=1./255)
-val_datagen = ImageDataGenerator(rescale=1./255)
+# def preprocess_data(item):
+#     image = tf.image.resize(item['images'], [48, 48])
+#     image = tf.cast(image, tf.float32) / 255.0  # Normaliser les images
+#     image = image - 1.0  # Centrer les données
+    
+#     # Obtenir les labels et convertir en type approprié
+#     label = item['labels']
+#     label = tf.cast(label, tf.int32)
+    
+#     return image, label
 
-# Chargement des données
-train_generator = train_datagen.flow_from_directory(
-    train_dir,
-    target_size=(48, 48),
-    batch_size=64,
-    color_mode='grayscale',
-    class_mode='sparse')
+def preprocess_data(item):
+    image = item['images']
+    
+    # Vérifier les dimensions de l'image et ajouter un canal si nécessaire
+    if len(image.shape) == 2:  # Supposant des images en niveaux de gris
+        image = tf.expand_dims(image, axis=-1)
+    
+    # S'assurer que l'image est en float32 pour la normalisation
+    image = tf.image.resize(image, [48, 48])
+    image = tf.cast(image, tf.float32) / 255.0
+    image = image - 1.0  # Centrer les données
 
-validation_generator = val_datagen.flow_from_directory(
-    validation_dir,
-    target_size=(48, 48),
-    batch_size=64,
-    color_mode='grayscale',
-    class_mode='sparse')
+    label = item['labels']
+    label = tf.cast(label, tf.int32)
+
+    return image, label
+
+# Création du dataset TensorFlow
+train_dataset = ds.tensorflow().map(preprocess_data).batch(32)
+test_dataset = ds_test.tensorflow().map(preprocess_data).batch(32)
