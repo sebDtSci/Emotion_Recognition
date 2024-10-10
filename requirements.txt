@@ -1,5 +1,7 @@
 tensorflow
+# tensorflow-metal
 numpy 
 matplotlib
 deeplake
 pandas
+opencv-python
