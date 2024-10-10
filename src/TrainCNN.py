@@ -6,7 +6,7 @@ from tensorflow.keras.layers import Conv2D, MaxPooling2D
 from tensorflow.keras.layers import Activation, Dropout, Flatten, Dense
 from tensorflow.keras.regularizers import l2
 
-from data import train_dataset, test_dataset
+from src.data import train_dataset, test_dataset
 
 model = Sequential([
     Conv2D(32, (3, 3), activation='relu', input_shape=(48, 48, 1)),
@@ -45,7 +45,7 @@ history = model.fit(
     batch_size = 64
 )
 
-model.save('emotion_detection_model.h5')
+model.save('model/emotion_detection_model.h5')
 print("Modèle sauvegardé sous 'emotion_detection_model.h5'")
 
 # Tracer les courbes de précision

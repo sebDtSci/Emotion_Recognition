@@ -7,7 +7,7 @@ from tensorflow.keras.models import load_model
 emotions = {0: 'Angry', 1: 'Disgust', 2: 'Fear', 3: 'Happy', 4: 'Sad', 5: 'Surprise', 6: 'Neutral'}
 
 # Charger le modèle déjà entraîné
-model = load_model('emotion_detection_model.h5')
+model = load_model('model/emotion_detection_model.h5')
 
 # Fonction pour prétraiter l'image
 def preprocess_image(image_path):
