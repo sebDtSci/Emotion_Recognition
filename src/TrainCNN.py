@@ -45,6 +45,9 @@ history = model.fit(
     batch_size = 64
 )
 
+# test_loss, test_acc = model.evaluate(test_images, test_labels)
+# print('test caccuracy:', test_acc)
+
 model.save('model/emotion_detection_model.h5')
 print("Modèle sauvegardé sous 'emotion_detection_model.h5'")
 
