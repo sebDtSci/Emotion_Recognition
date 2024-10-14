@@ -3,11 +3,13 @@ import cv2
 import numpy as np
 from tensorflow.keras.models import load_model
 
+from model import SEBlock
+
 # Chargement des émotions
 emotions = {0: 'Angry', 1: 'Disgust', 2: 'Fear', 3: 'Happy', 4: 'Sad', 5: 'Surprise', 6: 'Neutral'}
 
 # Charger le modèle déjà entraîné
-model = load_model('model/emotion_detection_model.h5')
+model = load_model('model/emotion_detection_model.h5', custom_objects={'SEBlock': SEBlock})
 
 # Fonction pour prétraiter l'image
 def preprocess_image(image_path):
@@ -17,7 +19,8 @@ def preprocess_image(image_path):
         raise ValueError(f"L'image n'a pas pu être chargée à partir de {image_path}")
     
     # Redimensionner l'image à 48x48
-    img = cv2.resize(img, (48, 48))
+    # img = cv2.resize(img, (48, 48))
+    img = cv2.resize(img, (64, 64))
 
     # Normalisation et centrage des données
     img = img / 255.0
@@ -44,7 +47,9 @@ def predict_emotion(image_path):
     return emotion_label, predictions[0]
 
 # Chemin de l'image que tu as prise
-image_path = "colere.jpg"
+# image_path = "joie.jpg"
+# image_path = "colere.jpg"
+image_path = "tristesse.jpg"
 
 # Prédire l'émotion sur l'image
 emotion, confidence = predict_emotion(image_path)

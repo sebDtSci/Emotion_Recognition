@@ -7,7 +7,7 @@ ds_test = deeplake.load('hub://activeloop/fer2013-public-test')
 ds_validation = deeplake.load('hub://activeloop/fer2013-public-test')
 
 def augment(image):
-    image = tf.image.random_flip_left_right(image)  # Flip horizontal aléatoire
+    # image = tf.image.random_flip_left_right(image)  # Flip horizontal aléatoire
     image = tf.image.random_brightness(image, max_delta=0.2)  # Variations de luminosité
     image = tf.image.random_contrast(image, lower=0.8, upper=1.2)  # Variations de contraste
     # image = tf.image.random_rotation(image, angles=0.1)  # Rotation aléatoire
@@ -21,7 +21,9 @@ def preprocess_data(item):
         image = tf.expand_dims(image, axis=-1)
     
     # S'assurer que l'image est en float32 pour la normalisation
-    image = tf.image.resize(image, [48, 48])
+    # image = tf.image.resize(image, [48, 48])
+    image = tf.image.resize(image, [64, 64])
+
     image = tf.cast(image, tf.float32) / 255.0
     image = image - 1.0  # Centrer les données
 
