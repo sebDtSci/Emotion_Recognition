@@ -50,7 +50,8 @@ def predict_emotion(image_path):
 # image_path = "data/joie.jpg"
 # image_path = "colere.jpg"
 # image_path = "data/tristesse.jpg"
-image_path = "data/deg2.jpeg"
+# image_path = "data/deg2.jpeg"
+image_path = "data/fear.jpg"
 
 # Prédire l'émotion sur l'image
 emotion, confidence = predict_emotion(image_path)
