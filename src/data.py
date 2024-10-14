@@ -4,17 +4,7 @@ import deeplake
 emotions = {0: 'Angry', 1: 'Disgust', 2: 'Fear', 3: 'Happy', 4: 'Sad', 5: 'Surprise', 6: 'Neutral'}
 ds = deeplake.load('hub://activeloop/fer2013-train')
 ds_test = deeplake.load('hub://activeloop/fer2013-public-test')
-
-# def preprocess_data(item):
-#     image = tf.image.resize(item['images'], [48, 48])
-#     image = tf.cast(image, tf.float32) / 255.0  # Normaliser les images
-#     image = image - 1.0  # Centrer les données
-    
-#     # Obtenir les labels et convertir en type approprié
-#     label = item['labels']
-#     label = tf.cast(label, tf.int32)
-    
-#     return image, label
+ds_validation = deeplake.load('hub://activeloop/fer2013-public-test')
 
 def augment(image):
     image = tf.image.random_flip_left_right(image)  # Flip horizontal aléatoire
@@ -46,3 +36,4 @@ def preprocess_data(item):
 # train_dataset = ds.tensorflow().map(preprocess_data).batch(32)
 train_dataset = ds.tensorflow().map(preprocess_data).batch(32).shuffle(buffer_size=1000)
 test_dataset = ds_test.tensorflow().map(preprocess_data).batch(32)
+validation_dataset = ds_validation.tensorflow().map(preprocess_data).batch(32)
