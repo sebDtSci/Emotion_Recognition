@@ -2,6 +2,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, BatchNormalization, GlobalAveragePooling2D, Multiply
 from tensorflow.keras.layers import Activation, Dropout, Flatten, Dense, Layer
 from tensorflow.keras.regularizers import l2
+from tensorflow.keras.applications import VGG16
 
 class SEBlock(Layer):
     def __init__(self, ratio=8, **kwargs):
@@ -107,6 +108,16 @@ model_2 = Sequential([
     Dropout(0.4),
 
     # Fully Connected Layers
+    Flatten(),
+    Dense(128, activation='relu', kernel_regularizer=l2(0.001)),
+    Dropout(0.5),
+    Dense(7, activation='softmax')
+])
+
+base_model = VGG16(weights='imagenet', include_top=False, input_shape=(64, 64, 1))
+base_model.trainable = False  # Pour commencer, ne pas entraîner la partie convolutionnelle
+model_3 = Sequential([
+    base_model,
     Flatten(),
     Dense(128, activation='relu', kernel_regularizer=l2(0.001)),
     Dropout(0.5),

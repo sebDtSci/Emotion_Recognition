@@ -3,10 +3,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from tensorflow.keras.optimizers import Adam
 
-from src.model import model_1, model_2
+from src.model import model_1, model_2, model_3
 from src.data import train_dataset, test_dataset, validation_dataset
 
-model = model_2
+model = model_3
 model.summary()
 
 # model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
