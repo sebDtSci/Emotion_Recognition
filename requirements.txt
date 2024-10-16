@@ -1,14 +1,14 @@
-tensorflow==2.16.2
+tensorflow
 # tensorflow-metal
-tensorflow-probability==0.19.0
-tensorflow-addons
+# tensorflow-probability
+# tensorflow-addons
 tf_keras
 numpy 
 matplotlib
 deeplake
 pandas
 opencv-python
-torch 
-onnx
-tf2onnx
-onnx-tf
+# torch 
+# onnx
+# tf2onnx
+# onnx-tf
