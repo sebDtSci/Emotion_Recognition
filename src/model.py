@@ -1,6 +1,7 @@
-from tensorflow.keras.models import Sequential
+import tensorflow as tf
+from tensorflow.keras.models import Sequential, Model, load_model
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, BatchNormalization, GlobalAveragePooling2D, Multiply
-from tensorflow.keras.layers import Activation, Dropout, Flatten, Dense, Layer
+from tensorflow.keras.layers import Activation, Dropout, Flatten, Dense, Layer, Input
 from tensorflow.keras.regularizers import l2
 from tensorflow.keras.applications import VGG16
 
@@ -115,7 +116,8 @@ model_2 = Sequential([
 ])
 
 base_model = VGG16(weights='imagenet', include_top=False, input_shape=(64, 64, 3))
-base_model.trainable = False  # Pour commencer, ne pas entraîner la partie convolutionnelle
+# Pour commencer, ne pas entraîner la partie convolutionnelle
+base_model.trainable = False  
 model_3 = Sequential([
     base_model,
     Flatten(),
@@ -123,3 +125,58 @@ model_3 = Sequential([
     Dropout(0.5),
     Dense(7, activation='softmax')
 ])
+
+### Combinaison des model avec openface pur 
+
+
+
+from keras.utils import CustomObjectScope
+
+with CustomObjectScope({'tf': tf}):
+    openface_model = load_model('nn4.small2.v1.h5')
+
+# openface_model = load_model('openface_model_converted.h5')
+# openface_model = tf.keras.models.load_model('openface_model_converted.h5')
+
+# Geler les couches du modèle OpenFace !!
+for layer in openface_model.layers:
+    layer.trainable = False
+
+# Ajouter les couches supplémentaires pour la classification des émotions
+input_layer = Input(shape=(64, 64, 1))
+x = openface_model(input_layer)
+
+# Ajout des couches convolutionnelles définies dans ton modèle `model_2`
+x = Conv2D(64, (3, 3), activation='relu')(x)
+x = BatchNormalization()(x)
+x = MaxPooling2D((2, 2))(x)
+x = Dropout(0.2)(x)
+
+x = Conv2D(128, (3, 3), activation='relu', padding='same')(x)
+x = BatchNormalization()(x)
+x = Conv2D(128, (3, 3), activation='relu', padding='same')(x)
+x = BatchNormalization()(x)
+x = MaxPooling2D((2, 2))(x)
+x = Dropout(0.3)(x)
+
+x = Conv2D(256, (3, 3), activation='relu', padding='same')(x)
+x = BatchNormalization()(x)
+x = Conv2D(256, (3, 3), activation='relu', padding='same')(x)
+x = BatchNormalization()(x)
+x = MaxPooling2D((2, 2))(x)
+x = Dropout(0.4)(x)
+
+x = Conv2D(512, (3, 3), activation='relu', padding='same')(x)
+x = BatchNormalization()(x)
+x = SEBlock()(x)  # Ajout du SE block
+x = MaxPooling2D((2, 2))(x)
+x = Dropout(0.4)(x)
+
+# Couches Fully Connected
+x = Flatten()(x)
+x = Dense(128, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.001))(x)
+x = Dropout(0.5)(x)
+output_layer = Dense(7, activation='softmax')(x)
+
+# Définir le modèle final
+model_combined = Model(inputs=input_layer, outputs=output_layer)

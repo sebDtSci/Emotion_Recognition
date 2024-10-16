@@ -8,10 +8,10 @@ import inspect
 # from src.model import model_1, model_2, model_3
 # from src.data import train_dataset, test_dataset, validation_dataset
 
-from model import model_1, model_2, model_3
+from model import model_1, model_2, model_3, model_combined
 from data import train_dataset, test_dataset, validation_dataset
 
-model = model_2
+model = model_combined
 model.summary()
 
 # model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
