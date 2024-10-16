@@ -2,20 +2,26 @@ import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
 from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.optimizers import SGD
+import inspect
 
-from src.model import model_1, model_2, model_3
-from src.data import train_dataset, test_dataset, validation_dataset
+# from src.model import model_1, model_2, model_3
+# from src.data import train_dataset, test_dataset, validation_dataset
 
-model = model_3
+from model import model_1, model_2, model_3
+from data import train_dataset, test_dataset, validation_dataset
+
+model = model_2
 model.summary()
 
 # model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 # model.compile(optimizer='RMSprop', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 # model.compile(optimizer='SGD', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-# from tensorflow.keras.optimizers import SGD
+# 
+
 # model.compile(optimizer=SGD(learning_rate=0.0001), loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
-model.compile(optimizer=Adam(learning_rate=0.001), loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+model.compile(optimizer=Adam(learning_rate=0.0001), loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
 early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', patience=5, restore_best_weights=True)
 
@@ -29,7 +35,7 @@ history = model.fit(
 )
 
 
-model.save('model/emotion_detection_model.h5')
+model.save('src/model/emotion_detection_model.h5')
 print("Modèle sauvegardé sous 'emotion_detection_model.h5'")
 
 # Tracer les courbes de précision
@@ -47,3 +53,17 @@ plt.show()
 test_loss, test_accuracy = model.evaluate(test_dataset)
 print(f'Perte sur le test set: {test_loss}')
 print(f'Précision sur le test set: {test_accuracy}')
+
+
+
+def get_variable_name(variable):
+    # Récupère le cadre d'appel actuel (frame)
+    callers_local_vars = inspect.currentframe().f_back.f_locals.items()
+    # Recherche du nom correspondant à la valeur de la variable
+    return [name for name, val in callers_local_vars if val is variable]
+
+
+f = open("src/model/model_name.txt", "w")
+f.write(f"{get_variable_name(model)[0]}")
+f.close()
+

@@ -114,7 +114,7 @@ model_2 = Sequential([
     Dense(7, activation='softmax')
 ])
 
-base_model = VGG16(weights='imagenet', include_top=False, input_shape=(64, 64, 1))
+base_model = VGG16(weights='imagenet', include_top=False, input_shape=(64, 64, 3))
 base_model.trainable = False  # Pour commencer, ne pas entraîner la partie convolutionnelle
 model_3 = Sequential([
     base_model,
