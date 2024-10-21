@@ -138,7 +138,7 @@ model_3 = Sequential([
 # with tf.keras.utils.custom_object_scope({'tf': tf}):
 #     openface_model = load_model('nn4.small2.v1.h5', compile=False)
     
-openface_model = load_model('nn4.small2.v1.h5')
+openface_model = load_model('src/nn4.small2.v1.h5')
 # openface_model = load_model('openface_model_converted.h5')
 # openface_model = tf.keras.models.load_model('openface_model_converted.h5')
 
